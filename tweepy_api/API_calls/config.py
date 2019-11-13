@@ -9,9 +9,8 @@ def create_api():
     '''
     # Authenticate to Twitter
 
-    auth = tweepy.OAuthHandler("XXXX", "XXXX")
-    auth.set_access_token("CONSUMER_KEY", "CONSUMER_SECRET",
-        "ACCESS_TOKEN","ACCESS_TOKEN_SECRET")
+    auth = tweepy.OAuthHandler("CONSUMER_KEY", "CONSUMER_SECRET")
+    auth.set_access_token("ACCESS_TOKEN","ACCESS_TOKEN_SECRET")
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, parser=tweepy.parsers.JSONParser())
 
     return api
