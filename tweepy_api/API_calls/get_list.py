@@ -13,7 +13,7 @@ def get_ids(screen_name):
 
     while cursor != 0 :
         user_ids = api.followers_ids(screen_name=screen_name, cursor=cursor)
-        id_list.append(user_ids[0]['ids'])
+        id_list.extend(user_ids[0]['ids'])
         cursor = user_ids[0]['next_cursor']
 
     return id_list

@@ -19,7 +19,10 @@ def get_tweets(user_id, timeline) :
         post_dict['user_id'] = user_id
         for post in list(post_attrs) :
             try :
-                post_dict[post].append(tweets[post])
+                t = tweets[post]
+                t = t.replace('\n','')
+                t = t.replace('\r','')
+                post_dict[post].append(t)
             except :
                 post_dict[post].append(np.nan)
 
@@ -54,7 +57,6 @@ def get_users(user_id, timeline):
     for attribute in attributes :
         try :
             user_dict[attribute].append(user_info[attribute])
-
         except :
             user_dict[attribute].append(np.nan)
 

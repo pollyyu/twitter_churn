@@ -14,6 +14,8 @@ def create_api():
         "RRcgaj400e2ubOFuiy8YwrvTBsjxs19YVhQB1tFYcN5lA")
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, parser=tweepy.parsers.JSONParser())
 
+    return api
+
     try:
         api.verify_credentials()
     except:
