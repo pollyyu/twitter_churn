@@ -1,10 +1,5 @@
------------------
----- USERS  -----
------------------
-
--- creating a user table
-DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS users2;
+CREATE TABLE IF NOT EXISTS users2 (
   index int,
   authorized varchar,
   contributors_enabled varchar,
@@ -31,98 +26,45 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (user_id)
 );
 
--- creating a tmp table
-DROP TABLE IF EXISTS tmp_table;
-CREATE TEMP TABLE tmp_table
-AS
-SELECT *
-FROM users
-WITH NO DATA;
+ALTER TABLE users3
+  ALTER created_at DROP DEFAULT
+ ,ALTER created_at type timestamp USING created_at::timestamp
+ ,ALTER created_at SET DEFAULT '1970-01-01 01:00:00'::timestamp;
 
--- inserting data generated in CSV to temp table
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/AOC_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Aerosmith_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/BarackObama_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/BernieSanders_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/BonJovi_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/ChiliPeppers_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/MittRomney_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/PythonHub_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/PythonInsider_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/PythonStack_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/RepCummings_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/SpeakerRyan_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/TDataScience_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Weezer_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/fullstackpython_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/paramore_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/pythontrending_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/realpython_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/thebeatles_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/thekillers_users.csv' DELIMITER ';' CSV HEADER;
-
--- second batch INSERT
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/TheChainsmokers_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/ThisIsSethsBlog_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/AdamMGrant_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Imaginedragons_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/dbader_org_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/SpeakerPelosi_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/richardbranson_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/danariely_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/realDonaldTrump_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/voxdotcom_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/JimCarrey_users.csv' DELIMITER ';' CSV HEADER;
---COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/profgalloway_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/sequoia_users.csv' DELIMITER ';' CSV HEADER;
-COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/tomhanks_users.csv' DELIMITER ';' CSV HEADER;
-
--- insert into users table from temp table
-INSERT INTO users
-SELECT  DISTINCT ON (user_id) *
-FROM tmp_table
-ON CONFLICT ON CONSTRAINT (user_id)
- (user_id)
-DO NOTHING;
 
 -----------------
 ---- POSTS ------
 -----------------
 
--- creating a post table
+-- DROP TABLE IF EXISTS posts;
+-- CREATE TABLE IF NOT EXISTS posts (
+-- index int,
+-- user_id varchar,
+-- created_at timestamp,
+-- text_content varchar,
+-- source varchar,
+-- in_reply_to_screen_name varchar,
+-- retweet_count BIGINT,
+-- favorite_count BIGINT,
+-- favorited varchar (12),
+-- retweeted varchar(12),
+-- is_quote_status varchar (12),
+-- retweeted_status varchar,
+-- hashtags varchar,
+-- len_hashtags int,
+-- symbols varchar,
+-- len_symbols int,
+-- user_mentions varchar,
+-- len_user_mentions int,
+-- PRIMARY KEY (user_id, created_at)
+-- );
 
-DROP TABLE IF EXISTS posts;
-CREATE TABLE IF NOT EXISTS posts (
-index int,
-user_id varchar,
-created_at timestamp,
-text_content varchar,
-source varchar,
-in_reply_to_screen_name varchar,
-retweet_count BIGINT,
-favorite_count BIGINT,
-favorited varchar (12),
-retweeted varchar(12),
-is_quote_status varchar (12),
-retweeted_status varchar,
-hashtags varchar,
-len_hashtags int,
-symbols varchar,
-len_symbols int,
-user_mentions varchar,
-len_user_mentions int,
-PRIMARY KEY (user_id, created_at)
-);
-
--- creating a tmp table
 DROP TABLE IF EXISTS tmp_table;
 CREATE TEMP TABLE tmp_table
 AS
 SELECT *
 FROM posts3
 WITH NO DATA;
-
--- copying files generated in csv to temp table
 
 COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/AOC_posts.csv' DELIMITER ';' CSV HEADER;
 COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Aerosmith_posts.csv' DELIMITER ';' CSV HEADER;
@@ -161,18 +103,130 @@ COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/JimCarrey_posts.csv' DELIMITER
 COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/sequoia_posts.csv' DELIMITER ';' CSV HEADER;
 COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/tomhanks_posts.csv' DELIMITER ';' CSV HEADER;
 
--- insert data from tmp to posts table
-INSERT INTO posts
+DROP TABLE IF EXISTS posts4;
+CREATE TABLE posts4
+AS
+SELECT *
+FROM posts3
+WITH NO DATA;
+
+INSERT INTO posts4
 SELECT  DISTINCT ON (user_id, created_at) *
 FROM tmp_table
 ON CONFLICT (user_id, created_at)
 DO NOTHING;
 
---------------------------------------
---- DATA PROCESSING OF RAW TABLES ----
---------------------------------------
+----------------------------------------------
+-- DROP TABLE users;
+-- CREATE TABLE users
+-- AS
+-- SELECT *
+-- FROM users2
+-- WITH NO DATA
+-- ;
 
--- writing sql query with regex to perform feature engineering from posts DATA
+
+DROP TABLE IF EXISTS tmp_table;
+CREATE TEMP TABLE tmp_table
+AS
+SELECT *
+FROM users
+WITH NO DATA;
+
+DROP TABLE IF EXISTS users2;
+CREATE TABLE users2
+AS
+SELECT *
+FROM users
+WITH NO DATA;
+
+
+-- INSERT INTO users2
+-- SELECT index, authorized, contributors_enabled, created_at, description,favourites_count,
+-- followers_count, following, friends_count, geo_enabled, has_extended_profile,
+-- is_translation_enabled, listed_count, location, name, notifications, profile_image_url,
+-- profile_use_background_image, protected, screen_name, statuses_count ,url, user_id FROM
+-- (SELECT *,
+-- ROW_NUMBER() OVER(PARTITION BY user_id ORDER BY user_id) AS ROW_NUMBER
+-- FROM users) sub
+-- WHERE ROW_NUMBER = 1
+
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/AOC_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Aerosmith_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/BarackObama_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/BernieSanders_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/BonJovi_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/ChiliPeppers_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/MittRomney_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/PythonHub_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/PythonInsider_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/PythonStack_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/RepCummings_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/SpeakerRyan_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/TDataScience_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Weezer_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/fullstackpython_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/paramore_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/pythontrending_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/realpython_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/thebeatles_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/thekillers_users.csv' DELIMITER ';' CSV HEADER;
+
+-- second batch INSERT
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/TheChainsmokers_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/ThisIsSethsBlog_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/AdamMGrant_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/Imaginedragons_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/dbader_org_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/SpeakerPelosi_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/richardbranson_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/danariely_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/realDonaldTrump_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/voxdotcom_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/JimCarrey_users.csv' DELIMITER ';' CSV HEADER;
+--COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/profgalloway_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/sequoia_users.csv' DELIMITER ';' CSV HEADER;
+COPY tmp_table FROM '/home/ubuntu/API_calls/Data2/tomhanks_users.csv' DELIMITER ';' CSV HEADER;
+
+
+INSERT INTO users2
+SELECT  DISTINCT ON (user_id) *
+FROM tmp_table
+-- ON CONFLICT ON CONSTRAINT (user_id)
+ -- (user_id)
+-- DO NOTHING;
+
+DELETE FROM users WHERE followers_count is null
+
+select count(*) from tmp_table where followers_count is null;
+
+
+
+-----------------------------------------
+
+aws$ jupyter notebook --no-browser --port=8889
+
+local$ ssh -N -f -L localhost:9995:localhost:8889 ubuntu@myaws
+
+
+scp -r ~/.ssh/new_key.pem API_calls ubuntu@myaws:.
+
+echo "$string" | sed
+
+------------
+-- let's first play with some easy data before scaling
+CREATE TABLE posts3
+AS SELECT * FROM
+posts
+WITH NO DATA
+-- LIMIT 3000
+
+COPY posts3 FROM '/home/ubuntu/API_calls/Data/ultimetis_posts.csv' DELIMITER ';' CSV HEADER;
+
+
+
+
+-- writing sql query to get posts DATA
 DROP TABLE IF EXISTS user_agg2;
 CREATE TABLE user_agg2 AS
 SELECT
@@ -214,13 +268,13 @@ FROM
   CASE WHEN favorited = 'True' THEN 1 ELSE 0 END AS favorited_YN,
   CASE WHEN retweeted = 'True' THEN 1 ELSE 0 END AS retweeted_YN,
   CASE WHEN is_quote_status = 'True' THEN 1 ELSE 0 END AS is_quote_status_YN
-  FROM posts) sub
+  FROM posts4) sub
 GROUP BY user_id
 ;
 
----- Getting dates for 1 month, 2 month and 3 month prior to user's last post
-DROP TABLE IF EXISTS dates_posts;
-CREATE TABLE dates_posts AS
+---- let's try the 1 month, 2 month and 3 month thing
+DROP TABLE IF EXISTS dates_posts2;
+CREATE TABLE dates_posts2 AS
 SELECT
 tb.user_id,
 aggr.days_30,
@@ -228,7 +282,7 @@ aggr.days_60,
 aggr.days_90,
 aggr.latest_post,
 tb.created_at
-FROM posts AS tb INNER JOIN
+FROM posts4 AS tb INNER JOIN
   (SELECT -- getting individual dates for each latest post
     user_id,
     latest_post - interval '30' day AS days_30,
@@ -243,7 +297,7 @@ FROM posts AS tb INNER JOIN
 ON tb.user_id = aggr.user_id
 ;
 
------ Count frequency of timeline posts 1,2 & 3 months prior to last post , aggregate by user id
+----- ok , let's try to count the days now
 DROP TABLE IF EXISTS agg_dates2;
 CREATE TABLE agg_dates2 AS
 SELECT
@@ -296,7 +350,14 @@ FROM user_agg2 a
 JOIN agg_dates2 b ON a.user_id = b.user_id
 
 
---- manipulating users table
+
+user_id, tweet_count, latest_post, earliest_post,count_posts, mean_text_length,
+std_dev_text_length, android, iphone, desktop_web, web_app, sum_count_reply_screen,
+sum_retweet, sum_favorite_count, sum_retweet_zero, sum_retweet_100, sum_retweet_1000,
+sum_retweet_viral, len_hashtags, len_symbols, len_user_mentions, days_30, days_60,
+days_90, days_before_90, index, authorized, contributors_enabled,
+
+--- create clean table
 DROP TABLE users_cleaned;
 CREATE TABLE users_cleaned AS
 -- INSERT INTO users_cleaned
@@ -326,11 +387,11 @@ char_length(screen_name) AS screen_name_length,
 statuses_count,
 CASE WHEN url IS NOT NULL THEN 1 ELSE 0 END AS url_YN,
 user_id
-FROM users
+FROM users2
 WHERE authorized is null
 ;
 
---- joined TABLE with processed (and collapsed) post and user table 
+--- joined TABLE
 DROP TABLE final_table;
 CREATE TABLE final_table2 AS
 SELECT
@@ -344,17 +405,26 @@ FROM final_users a INNER JOIN users_cleaned b
 ON a.user_id = b.user_id
 
 
--- CREATE TABLE final_table3 AS
--- SELECT user_id, tweet_count, latest_post, earliest_post,count_posts, mean_text_length,
--- std_dev_text_length, android, iphone, desktop_web, web_app, sum_count_reply_screen,
--- sum_retweet, sum_favorite_count, sum_retweet_zero, sum_retweet_100, sum_retweet_1000,
--- sum_retweet_viral, len_hashtags, len_symbols, len_user_mentions, days_30, days_60,
--- days_90, days_before_90, created_at, description, length_description, favourites_count,
--- followers_count,following_yn, friends_count, geo_enabled_yn, extended_profile_yn,
--- translation_enabled_yn, listed_count, location_stated_yn, location, name,
--- length_name, notification_yn, profile_image_url, default_profile_image_yn, background_image_yn,
--- protected_yn, screen_name, screen_name_length, statuses_count, url_yn FROM
--- (SELECT *,
--- ROW_NUMBER() OVER(PARTITION BY user_id ORDER BY user_id) AS ROW_NUMBER
--- FROM final_table2) sub
--- WHERE ROW_NUMBER = 1
+CREATE TABLE final_table3 AS
+SELECT user_id, tweet_count, latest_post, earliest_post,count_posts, mean_text_length,
+std_dev_text_length, android, iphone, desktop_web, web_app, sum_count_reply_screen,
+sum_retweet, sum_favorite_count, sum_retweet_zero, sum_retweet_100, sum_retweet_1000,
+sum_retweet_viral, len_hashtags, len_symbols, len_user_mentions, days_30, days_60,
+days_90, days_before_90, created_at, description, length_description, favourites_count,
+followers_count,following_yn, friends_count, geo_enabled_yn, extended_profile_yn,
+translation_enabled_yn, listed_count, location_stated_yn, location, name,
+length_name, notification_yn, profile_image_url, default_profile_image_yn, background_image_yn,
+protected_yn, screen_name, screen_name_length, statuses_count, url_yn FROM
+(SELECT *,
+ROW_NUMBER() OVER(PARTITION BY user_id ORDER BY user_id) AS ROW_NUMBER
+FROM final_table2) sub
+WHERE ROW_NUMBER = 1
+
+---- let's analyze the table
+scp -i ~/.ssh/new_key.pem ubuntu@myaws:/home/ubuntu/api_calls/Data/menu_initial.csv .
+
+scp -i ~/.ssh/new_key.pem ubuntu@54.219.144.195:/home/ubuntu/Modeling.ipynb .
+
+Modeling.ipynb
+
+python -c 'from run_ops import *; create_csv(user_set = ["Kell_Belle77"])'
